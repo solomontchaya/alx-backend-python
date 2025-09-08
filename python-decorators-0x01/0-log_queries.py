@@ -1,5 +1,6 @@
 import sqlite3
 import functools
+from datetime import datetime
 
 # ===== Decorator to log SQL queries =====
 def log_queries(func):
@@ -17,7 +18,6 @@ def log_queries(func):
 
         return func(*args, **kwargs)
     return wrapper
-
 
 @log_queries
 def fetch_all_users(query):
