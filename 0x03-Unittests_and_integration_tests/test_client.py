@@ -3,7 +3,7 @@
 Unit tests for client module
 """
 import unittest
-from unittest.mock import patch, Mock, PropertyMock
+from unittest.mock import patch, Mock, PropertyMock, call
 from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 from fixtures import TEST_PAYLOAD
@@ -70,7 +70,7 @@ class TestGithubOrgClient(unittest.TestCase):
         ({"license": {"key": "other_license"}}, "my_license", False),
     ])
     def test_has_license(self, repo, license_key, expected_result):
-        """Test GithubOrgClient.has_license returns expected result"""
+        """Test has_license returns expected result"""
         result = GithubOrgClient.has_license(repo, license_key)
         self.assertEqual(result, expected_result)
 
@@ -89,7 +89,9 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Set up class method to mock requests.get"""
+        # Store the patcher as a class attribute
         cls.get_patcher = patch('client.requests.get')
+        # Start the patcher and store the mock
         cls.mock_get = cls.get_patcher.start()
 
         def side_effect(url):
@@ -117,9 +119,18 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         self.assertEqual(result, self.expected_repos)
         self.assertEqual(self.mock_get.call_count, 2)
 
-        calls = [call[0][0] for call in self.mock_get.call_args_list]
-        self.assertIn("https://api.github.com/orgs/google", calls)
-        self.assertIn("https://api.github.com/orgs/google/repos", calls)
+        # Check that the correct URLs were called
+        expected_urls = [
+            "https://api.github.com/orgs/google",
+            "https://api.github.com/orgs/google/repos"
+        ]
+        
+        # Get all the URLs that were actually called
+        actual_urls = [args[0] for args, _ in self.mock_get.call_args_list]
+        
+        # Check that both expected URLs are in the actual calls
+        for expected_url in expected_urls:
+            self.assertIn(expected_url, actual_urls)
 
 
 if __name__ == '__main__':
