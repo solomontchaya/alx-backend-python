@@ -28,13 +28,14 @@ class TestAccessNestedMap(unittest.TestCase):
         ({}, ("a",), "'a'"),
         ({"a": 1}, ("a", "b"), "'b'"),
     ])
-    def test_access_nested_map_exception(self, nested_map, path, expected_exception_message):
+    def test_access_nested_map_exception(self, nested_map, path,
+                                         expected_exception_message):
         """
         Test that access_nested_map raises KeyError with expected message
         """
         with self.assertRaises(KeyError) as context:
             access_nested_map(nested_map, path)
-        
+
         self.assertEqual(str(context.exception), expected_exception_message)
 
 
@@ -50,7 +51,7 @@ class TestGetJson(unittest.TestCase):
     @patch('utils.requests.get')
     def test_get_json(self, test_url, test_payload, mock_get):
         """
-        Test that get_json returns the expected result and makes the correct HTTP call
+        Test that get_json returns the expected result and makes correct HTTP call
         """
         # Create a mock response object
         mock_response = Mock()
@@ -62,7 +63,7 @@ class TestGetJson(unittest.TestCase):
 
         # Assert that requests.get was called exactly once with the test_url
         mock_get.assert_called_once_with(test_url)
-        
+
         # Assert that the result is equal to test_payload
         self.assertEqual(result, test_payload)
 
@@ -74,7 +75,7 @@ class TestMemoize(unittest.TestCase):
 
     def test_memoize(self):
         """
-        Test that memoize decorator caches the result and only calls the method once
+        Test that memoize decorator caches the result and only calls method once
         """
         # Define the test class inside the method as required
         class TestClass:
@@ -103,7 +104,6 @@ class TestMemoize(unittest.TestCase):
 
             # Assert that a_method was called only once
             mock_a_method.assert_called_once()
-
 
 if __name__ == '__main__':
     unittest.main()
