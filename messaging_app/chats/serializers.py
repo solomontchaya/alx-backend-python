@@ -98,7 +98,7 @@ class ConversationSerializer(serializers.ModelSerializer):
     )
     messages = MessageSerializer(many=True, read_only=True)
     participant_ids = serializers.ListField(
-        child=serializers.UUIDField(),
+        child=serializers.CharField(),
         write_only=True,
         required=True
     )
