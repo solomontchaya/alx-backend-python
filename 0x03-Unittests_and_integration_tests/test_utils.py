@@ -4,7 +4,8 @@ Unit tests for utils.py
 """
 import unittest
 from parameterized import parameterized
-from utils import access_nested_map  # add other imports here if you have more tests
+from unittest.mock import patch, Mock
+from utils import access_nested_map, get_json, memoize  # <-- ensure memoize is imported
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -30,10 +31,50 @@ class TestAccessNestedMap(unittest.TestCase):
         self.assertEqual(str(e.exception), repr(path[-1]))
 
 
-# 👉 If you already have other test classes, just keep them **below** this class
-# Example:
-# class TestGetJson(unittest.TestCase):
-#     ...
+class TestGetJson(unittest.TestCase):
+    """Tests for the get_json function."""
+
+    @parameterized.expand([
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False}),
+    ])
+    def test_get_json(self, test_url, test_payload):
+        """Test that get_json returns the expected payload without real HTTP calls."""
+        mock_response = Mock()
+        mock_response.json.return_value = test_payload
+        with patch("utils.requests.get", return_value=mock_response) as mock_get:
+            result = get_json(test_url)
+            mock_get.assert_called_once_with(test_url)  # called exactly once with URL
+            self.assertEqual(result, test_payload)      # returned payload is correct
+
+
+class TestMemoize(unittest.TestCase):
+    """Tests for the memoize decorator."""
+
+    def test_memoize(self):
+        """Test that memoize caches the result of a method."""
+        class TestClass:
+            def a_method(self):
+                return 42
+
+            @memoize
+            def a_property(self):
+                return self.a_method()
+
+        test_obj = TestClass()
+
+        # Patch a_method so we can track how many times it is called
+        with patch.object(TestClass, "a_method", return_value=42) as mock_method:
+            first_call = test_obj.a_property
+            second_call = test_obj.a_property
+
+            # Both calls return the same cached value
+            self.assertEqual(first_call, 42)
+            self.assertEqual(second_call, 42)
+
+            # a_method should have been called only once because of memoization
+            mock_method.assert_called_once()
+
 
 if __name__ == "__main__":
     unittest.main()
