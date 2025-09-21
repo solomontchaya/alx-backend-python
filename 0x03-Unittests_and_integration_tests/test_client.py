@@ -4,7 +4,7 @@ Unit tests for client module
 """
 import unittest
 from unittest.mock import (
-    patch, Mock, PropertyMock, call
+    patch, Mock, PropertyMock
 )
 from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
@@ -103,6 +103,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """Set up class method to mock requests.get"""
         cls.get_patcher = patch('client.requests.get')
         cls.mock_get = cls.get_patcher.start()
+        cls.addClassCleanup(cls.get_patcher.stop)
 
         def side_effect(url):
             mock_response = Mock()
@@ -116,11 +117,6 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
         cls.mock_get.side_effect = side_effect
 
-    @classmethod
-    def tearDownClass(cls):
-        """Tear down class method to stop the patcher"""
-        cls.get_patcher.stop()
-
     def test_public_repos_integration(self):
         """Integration test for public_repos method"""
         client = GithubOrgClient("google")
@@ -133,7 +129,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             "https://api.github.com/orgs/google",
             "https://api.github.com/orgs/google/repos",
         ]
-        actual_urls = [args[0] for args, _ in self.mock_get.call_args_list]
+        actual_urls = [call_args[0][0] for call_args in self.mock_get.call_args_list]
 
         for expected_url in expected_urls:
             self.assertIn(expected_url, actual_urls)
@@ -150,7 +146,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             "https://api.github.com/orgs/google",
             "https://api.github.com/orgs/google/repos",
         ]
-        actual_urls = [args[0] for args, _ in self.mock_get.call_args_list]
+        actual_urls = [call_args[0][0] for call_args in self.mock_get.call_args_list]
 
         for expected_url in expected_urls:
             self.assertIn(expected_url, actual_urls)
