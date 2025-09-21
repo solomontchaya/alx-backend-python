@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
+"""
+Unit tests for utils.py
+"""
 import unittest
 from parameterized import parameterized
-from utils import access_nested_map
+from utils import access_nested_map  # add other imports here if you have more tests
 
 
 class TestAccessNestedMap(unittest.TestCase):
-    """Unit tests for utils.access_nested_map"""
+    """Tests for the access_nested_map function."""
 
     @parameterized.expand([
         ({"a": 1}, ("a",), 1),
@@ -13,19 +16,24 @@ class TestAccessNestedMap(unittest.TestCase):
         ({"a": {"b": 2}}, ("a", "b"), 2),
     ])
     def test_access_nested_map(self, nested_map, path, expected):
-        """Test valid access returns the expected result."""
+        """Test that access_nested_map returns the expected value."""
         self.assertEqual(access_nested_map(nested_map, path), expected)
 
     @parameterized.expand([
-        ({}, ("a",), "a"),
-        ({"a": 1}, ("a", "b"), "b"),
+        ({}, ("a",)),
+        ({"a": 1}, ("a", "b")),
     ])
-    def test_access_nested_map_exception(self, nested_map, path, expected_key):
-        """Test that KeyError is raised with the correct message."""
-        with self.assertRaises(KeyError) as cm:
+    def test_access_nested_map_exception(self, nested_map, path):
+        """Test that KeyError is raised when path is invalid."""
+        with self.assertRaises(KeyError) as e:
             access_nested_map(nested_map, path)
-        self.assertEqual(str(cm.exception), f"'{expected_key}'")
+        self.assertEqual(str(e.exception), repr(path[-1]))
 
+
+# 👉 If you already have other test classes, just keep them **below** this class
+# Example:
+# class TestGetJson(unittest.TestCase):
+#     ...
 
 if __name__ == "__main__":
     unittest.main()
