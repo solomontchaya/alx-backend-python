@@ -3,7 +3,9 @@
 Unit tests for client module
 """
 import unittest
-from unittest.mock import patch, Mock, PropertyMock, call
+from unittest.mock import (
+    patch, Mock, PropertyMock, call
+)
 from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 from fixtures import TEST_PAYLOAD
@@ -35,8 +37,10 @@ class TestGithubOrgClient(unittest.TestCase):
             "repos_url": "https://api.github.com/orgs/testorg/repos"
         }
 
-        with patch('client.GithubOrgClient.org',
-            new_callable=PropertyMock) as mock_org:
+        with patch(
+            'client.GithubOrgClient.org',
+            new_callable=PropertyMock
+        ) as mock_org:
             mock_org.return_value = test_payload
             client = GithubOrgClient("testorg")
             result = client._public_repos_url
@@ -50,12 +54,16 @@ class TestGithubOrgClient(unittest.TestCase):
         repos_payload = [
             {"name": "repo1", "license": {"key": "mit"}},
             {"name": "repo2", "license": {"key": "apache-2.0"}},
-            {"name": "repo3", "license": None}
+            {"name": "repo3", "license": None},
         ]
 
-        with patch('client.GithubOrgClient._public_repos_url',
-                   new_callable=PropertyMock) as mock_url:
-            mock_url.return_value = "https://api.github.com/orgs/testorg/repos"
+        with patch(
+            'client.GithubOrgClient._public_repos_url',
+            new_callable=PropertyMock
+        ) as mock_url:
+            mock_url.return_value = (
+                "https://api.github.com/orgs/testorg/repos"
+            )
             mock_get_json.return_value = repos_payload
 
             client = GithubOrgClient("testorg")
@@ -64,7 +72,9 @@ class TestGithubOrgClient(unittest.TestCase):
 
             self.assertEqual(result, expected_repos)
             mock_url.assert_called_once()
-            expected_call = "https://api.github.com/orgs/testorg/repos"
+            expected_call = (
+                "https://api.github.com/orgs/testorg/repos"
+            )
             mock_get_json.assert_called_once_with(expected_call)
 
     @parameterized.expand([
@@ -91,9 +101,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Set up class method to mock requests.get"""
-        # Store the patcher as a class attribute
         cls.get_patcher = patch('client.requests.get')
-        # Start the patcher and store the mock
         cls.mock_get = cls.get_patcher.start()
 
         def side_effect(url):
@@ -121,16 +129,12 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         self.assertEqual(result, self.expected_repos)
         self.assertEqual(self.mock_get.call_count, 2)
 
-        # Check that the correct URLs were called
         expected_urls = [
             "https://api.github.com/orgs/google",
-            "https://api.github.com/orgs/google/repos"
+            "https://api.github.com/orgs/google/repos",
         ]
-        
-        # Get all the URLs that were actually called
         actual_urls = [args[0] for args, _ in self.mock_get.call_args_list]
-        
-        # Check that both expected URLs are in the actual calls
+
         for expected_url in expected_urls:
             self.assertIn(expected_url, actual_urls)
 
@@ -142,16 +146,12 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         self.assertEqual(result, self.apache2_repos)
         self.assertEqual(self.mock_get.call_count, 2)
 
-        # Check that the correct URLs were called
         expected_urls = [
             "https://api.github.com/orgs/google",
-            "https://api.github.com/orgs/google/repos"
+            "https://api.github.com/orgs/google/repos",
         ]
-        
-        # Get all the URLs that were actually called
         actual_urls = [args[0] for args, _ in self.mock_get.call_args_list]
-        
-        # Check that both expected URLs are in the actual calls
+
         for expected_url in expected_urls:
             self.assertIn(expected_url, actual_urls)
 
