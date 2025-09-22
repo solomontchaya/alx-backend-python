@@ -1,23 +1,17 @@
-from django.shortcuts import render
-from chats.serializers import UserSerializer, MessageSerializer, ConversationSerializer
-
-# Create your views here.
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, filters
 from rest_framework.response import Response
-from rest_framework.decorators import action
 from .models import Conversation, Message, User
 from .serializers import ConversationSerializer, MessageSerializer
 
 
-# -----------------------
-# Conversation ViewSet
-# -----------------------
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all().order_by('-created_at')
     serializer_class = ConversationSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['participants__email']
+    ordering_fields = ['created_at']
 
-    # Custom create to handle participants
     def create(self, request, *args, **kwargs):
         participant_ids = request.data.get('participant_ids', [])
         if not participant_ids or len(participant_ids) < 2:
@@ -30,15 +24,14 @@ class ConversationViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-# -----------------------
-# Message ViewSet
-# -----------------------
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all().order_by('sent_at')
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['message_body', 'sender__email']
+    ordering_fields = ['sent_at']
 
-    # Override create to assign sender automatically
     def create(self, request, *args, **kwargs):
         sender = request.user
         conversation_id = request.data.get('conversation')
