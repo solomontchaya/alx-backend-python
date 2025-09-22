@@ -14,13 +14,15 @@ class User(AbstractUser):
         ('admin', 'Admin'),
     ]
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    first_name = models.CharField(max_length=150, null=False)
+    last_name = models.CharField(max_length=150, null=False)
     email = models.EmailField(unique=True, null=False)
+    password = models.CharField(max_length=128)  # stores hashed password
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='guest')
     created_at = models.DateTimeField(default=timezone.now)
 
-    # Optional: Remove username requirement if using email login
     username = None
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -33,7 +35,7 @@ class User(AbstractUser):
 # Conversation Model
 # -----------------------
 class Conversation(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    conversation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     participants = models.ManyToManyField(User, related_name='conversations')
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -46,7 +48,7 @@ class Conversation(models.Model):
 # Message Model
 # -----------------------
 class Message(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    message_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     message_body = models.TextField()
