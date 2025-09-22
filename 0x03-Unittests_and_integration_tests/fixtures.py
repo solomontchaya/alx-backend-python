@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
 # fixtures.py
+#!/usr/bin/env python3
+
+# fixtures.py
+
 org_payload = {
     "login": "google",
     "repos_url": "https://api.github.com/orgs/google/repos",
@@ -14,6 +18,7 @@ repos_payload = [
 expected_repos = ["repo1", "repo2"]
 apache2_repos = ["repo1"]
 
+# If you want a TEST_PAYLOAD, define it completely, e.g.:
 
 TEST_PAYLOAD = [
   (
