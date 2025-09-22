@@ -3,8 +3,6 @@ from parameterized import parameterized
 from unittest.mock import patch, Mock
 from utils import access_nested_map, get_json, memoize
 
-
-# 1️⃣ Test access_nested_map for normal cases
 class TestAccessNestedMap(unittest.TestCase):
 
     @parameterized.expand([
