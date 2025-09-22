@@ -1,24 +1,37 @@
 #!/usr/bin/env python3
 
-# fixtures.py
+
 #!/usr/bin/env python3
+"""Fixtures for GithubOrgClient tests."""
 
-# fixtures.py
+from typing import Any, Dict, List
 
-org_payload = {
+# Example payload for a Github organization
+org_payload: Dict[str, Any] = {
     "login": "google",
     "repos_url": "https://api.github.com/orgs/google/repos",
 }
 
-repos_payload = [
+# Example payload for repositories under a Github organization
+repos_payload: List[Dict[str, Any]] = [
     {"name": "repo1", "license": {"key": "apache-2.0"}},
     {"name": "repo2", "license": {"key": "mit"}},
 ]
 
-expected_repos = ["repo1", "repo2"]
-apache2_repos = ["repo1"]
+# Expected results for tests
+expected_repos: List[str] = ["repo1", "repo2"]
+apache2_repos: List[str] = ["repo1"]
 
-# If you want a TEST_PAYLOAD, define it completely, e.g.:
+# Additional test payloads for parameterized tests
+TEST_PAYLOAD: List[Any] = [
+    (
+        {"repos_url": "https://api.github.com/orgs/google/repos"},
+        [{"name": "repo1", "license": {"key": "apache-2.0"}},
+         {"name": "repo2", "license": {"key": "mit"}}],
+        ["repo1", "repo2"],
+        ["repo1"],
+    )
+]
 
 TEST_PAYLOAD = [
   (
