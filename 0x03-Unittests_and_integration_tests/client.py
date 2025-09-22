@@ -46,7 +46,6 @@ class GithubOrgClient:
         ]
 
         return public_repos
-
     @staticmethod
     def has_license(repo: Dict[str, Dict], license_key: str) -> bool:
         """Static: has_license"""

@@ -1,35 +1,26 @@
 #!/usr/bin/env python3
+"""Fixture data for testing GithubOrgClient."""
 
-
-#!/usr/bin/env python3
-"""Fixtures for GithubOrgClient tests."""
-
-from typing import Any, Dict, List
-
-# Example payload for a Github organization
-org_payload: Dict[str, Any] = {
+org_payload = {
     "login": "google",
     "repos_url": "https://api.github.com/orgs/google/repos",
 }
 
-# Example payload for repositories under a Github organization
-repos_payload: List[Dict[str, Any]] = [
+repos_payload = [
     {"name": "repo1", "license": {"key": "apache-2.0"}},
-    {"name": "repo2", "license": {"key": "mit"}},
+    {"name": "repo2", "license": {"key": "mit"}}
 ]
 
-# Expected results for tests
-expected_repos: List[str] = ["repo1", "repo2"]
-apache2_repos: List[str] = ["repo1"]
+expected_repos = ["repo1", "repo2"]
+apache2_repos = ["repo1"]
 
-# Additional test payloads for parameterized tests
-TEST_PAYLOAD: List[Any] = [
+TEST_PAYLOAD = [
     (
         {"repos_url": "https://api.github.com/orgs/google/repos"},
-        [{"name": "repo1", "license": {"key": "apache-2.0"}},
-         {"name": "repo2", "license": {"key": "mit"}}],
-        ["repo1", "repo2"],
-        ["repo1"],
+        [
+            {"name": "repo1", "license": {"key": "apache-2.0"}},
+            {"name": "repo2", "license": {"key": "mit"}}
+        ]
     )
 ]
 
