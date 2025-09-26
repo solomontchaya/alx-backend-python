@@ -1,26 +1,28 @@
-from rest_framework import permissions
-from rest_framework.permissions import BasePermission, IsAuthenticated
+# chats/permissions.py
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 class IsParticipantOfConversation(BasePermission):
     """
     Custom permission:
-    - User must be authenticated
-    - User must be a participant in the conversation
+    - Only authenticated users can access the API
+    - Only participants of a conversation can create, view, update, or delete messages
     """
 
     def has_permission(self, request, view):
-        # Only authenticated users can access the API
         return request.user and request.user.is_authenticated
 
     def has_object_permission(self, request, view, obj):
         """
-        obj will be a Conversation or a Message instance.
-        We assume:
-          - Conversation has participants (ManyToMany with User)
-          - Message has a conversation field (FK) and belongs to one Conversation
+        obj may be a Conversation or Message.
         """
-        if hasattr(obj, "participants"):  # conversation object
+        # Restrict to allowed methods
+        if request.method not in ["GET", "POST", "PUT", "PATCH", "DELETE"]:
+            return False
+
+        if hasattr(obj, "participants"):  # Conversation
             return request.user in obj.participants.all()
-        if hasattr(obj, "conversation"):  # message object
+
+        if hasattr(obj, "conversation"):  # Message
             return request.user in obj.conversation.participants.all()
+
         return False
