@@ -4,12 +4,12 @@ from .models import Conversation, Message
 
 class IsParticipantOfConversation(permissions.BasePermission):
     """
-    Allow access only if the requesting user is a participant of
-    the conversation (for both Conversation and Message objects).
+    Allow only authenticated participants of a conversation to
+    access or modify that conversation or its messages.
     """
 
     def has_permission(self, request, view):
-        # User must at least be authenticated
+        # Must be authenticated to even access the endpoint
         return request.user and request.user.is_authenticated
 
     def has_object_permission(self, request, view, obj):
