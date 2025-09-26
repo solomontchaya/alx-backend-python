@@ -1,8 +1,13 @@
 from rest_framework import viewsets, status, permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q, Prefetch
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from .permissions import IsParticipantOfConversation
+from .pagination import MessagePagination
+from .filters import MessageFilter
 from .models import User, Conversation, Message, ConversationParticipant
 from .serializers import (
     UserSerializer,
@@ -19,7 +24,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
     ViewSet for handling conversations
     """
     queryset = Conversation.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsParticipantOfConversation]
     
     def get_serializer_class(self):
         if self.action == 'list':
@@ -186,7 +191,10 @@ class MessageViewSet(viewsets.ModelViewSet):
     ViewSet for handling messages across all conversations
     """
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsParticipantOfConversation]
+    pagination_class = MessagePagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MessageFilter
     
     def get_queryset(self):
         """
