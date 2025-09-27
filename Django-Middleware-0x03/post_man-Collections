@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "Messaging App API",
+    "_postman_id": "e4d9c5a3-1234-4b88-9ab1-abcdef123456",
+    "description": "Collection to test conversations, messages, and JWT authentication for messaging_app.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1️⃣ Register (optional)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": { "raw": "http://localhost:8000/api/register/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","register",""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"TestPass123\",\n    \"email\": \"test@example.com\"\n}"
+        }
+      }
+    },
+    {
+      "name": "2️⃣ Obtain JWT Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": { "raw": "http://localhost:8000/api/token/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","token",""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"TestPass123\"\n}"
+        }
+      }
+    },
+    {
+      "name": "3️⃣ Refresh JWT Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": { "raw": "http://localhost:8000/api/token/refresh/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","token","refresh",""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"refresh\": \"<paste-refresh-token-here>\"\n}"
+        }
+      }
+    },
+    {
+      "name": "4️⃣ Create Conversation",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "http://localhost:8000/api/conversations/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","conversations",""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Test Conversation\",\n    \"participants\": [2] \n}"
+        }
+      }
+    },
+    {
+      "name": "5️⃣ Send Message",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "http://localhost:8000/api/conversations/1/messages/", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","conversations","1","messages",""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"content\": \"Hello from Postman!\"\n}"
+        }
+      }
+    },
+    {
+      "name": "6️⃣ Fetch Conversations (Paginated & Filtered)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": {
+          "raw": "http://localhost:8000/api/conversations/?page=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api","conversations",""],
+          "query": [
+            { "key": "page", "value": "1" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "7️⃣ Unauthorized Access Test",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/conversations/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api","conversations",""]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "access_token",
+      "value": ""
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+	"id": "629c870f-0416-41ab-9afd-e50abd53ef30",
+	"name": "Messaging App API",
+	"timestamp": "2025-09-27T15:28:50.780Z",
+	"collection_id": "39087607-ac9f84ac-5bb8-4f1e-8d24-c3d0f9ebe0c3",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 0,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2025-09-27T15:28:48.412Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "b7ef5c68-e500-44a0-b495-903220bd237c",
+			"name": "1️⃣ Register (optional)",
+			"url": "http://localhost:8000/api/register/",
+			"time": 89,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				89
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "f625dfa1-90bf-4b4e-adf9-35bde71bf8ae",
+			"name": "2️⃣ Obtain JWT Token",
+			"url": "http://localhost:8000/api/token/",
+			"time": 78,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				78
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "0e82f4c4-7c59-4069-b181-d17d69f83404",
+			"name": "3️⃣ Refresh JWT Token",
+			"url": "http://localhost:8000/api/token/refresh/",
+			"time": 358,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				358
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "b8f78886-e11e-447f-b214-ee177c6de44b",
+			"name": "4️⃣ Create Conversation",
+			"url": "http://localhost:8000/api/conversations/",
+			"time": 343,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				343
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "1f88f2a5-3912-4591-bd5c-ffca3f49add0",
+			"name": "5️⃣ Send Message",
+			"url": "http://localhost:8000/api/conversations/1/messages/",
+			"time": 77,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				77
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "cac5f635-4cb7-44cf-b17b-5f603f84a73e",
+			"name": "6️⃣ Fetch Conversations (Paginated & Filtered)",
+			"url": "http://localhost:8000/api/conversations/?page=1",
+			"time": 127,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				127
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "9a28b4eb-79ed-4d8a-823a-9442d47518e2",
+			"name": "7️⃣ Unauthorized Access Test",
+			"url": "http://localhost:8000/api/conversations/",
+			"time": 265,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				265
+			],
+			"allTests": [
+				{}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 1337,
+	"collection": {
+		"requests": [
+			{
+				"id": "b7ef5c68-e500-44a0-b495-903220bd237c",
+				"method": "POST"
+			},
+			{
+				"id": "f625dfa1-90bf-4b4e-adf9-35bde71bf8ae",
+				"method": "POST"
+			},
+			{
+				"id": "0e82f4c4-7c59-4069-b181-d17d69f83404",
+				"method": "POST"
+			},
+			{
+				"id": "b8f78886-e11e-447f-b214-ee177c6de44b",
+				"method": "POST"
+			},
+			{
+				"id": "1f88f2a5-3912-4591-bd5c-ffca3f49add0",
+				"method": "POST"
+			},
+			{
+				"id": "cac5f635-4cb7-44cf-b17b-5f603f84a73e",
+				"method": "GET"
+			},
+			{
+				"id": "9a28b4eb-79ed-4d8a-823a-9442d47518e2",
+				"method": "GET"
+			}
+		]
+	}
+}
