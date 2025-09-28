@@ -3,12 +3,12 @@ from datetime import datetime
 import logging
 from django.http import HttpResponseForbidden
 
-# Configure logging to write to a file
-logging.basicConfig(
-    filename='request.logs',  # File where logs will be saved
-    level=logging.INFO,
-    format='%(message)s'
-)
+logger = logging.getLogger(__name__)
+handler = logging.FileHandler('requests.log')       # creates requests.log in project root
+formatter = logging.Formatter('%(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 class RequestLoggingMiddleware:
     def __init__(self, get_response):
@@ -16,11 +16,9 @@ class RequestLoggingMiddleware:
 
     def __call__(self, request):
         user = request.user if request.user.is_authenticated else "Anonymous"
-        log_message = f"{datetime.now()} - User: {user} - Path: {request.path}"
-        logging.info(log_message)
-
-        response = self.get_response(request)
-        return response
+        logger.info(f"{datetime.now()} - User: {user} - Path: {request.path}")
+        return self.get_response(request)
+    
 class RestrictAccessByTimeMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
