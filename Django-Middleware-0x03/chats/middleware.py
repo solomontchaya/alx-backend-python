@@ -26,10 +26,10 @@ class RestrictAccessByTimeMiddleware:
     def __call__(self, request):
         """
         Deny access outside the allowed hours:
-        Allowed window = 6PM (18:00) to 9PM (21:00)
+        Allowed window = 4PM (16:00) to 9PM (21:00)
         """
         now = datetime.now().time()
-        start = datetime.strptime("18:00", "%H:%M").time()  # 6 PM
+        start = datetime.strptime("16:00", "%H:%M").time()  # 6 PM
         end   = datetime.strptime("21:00", "%H:%M").time()  # 9 PM
 
         if not (start <= now <= end):
