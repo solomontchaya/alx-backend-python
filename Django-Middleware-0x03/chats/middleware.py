@@ -1,3 +1,19 @@
+from django.http import HttpResponseForbidden
+
+class RolepermissionMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # Only check for authenticated users
+        user = getattr(request, 'user', None)
+        # You can adjust the path check to restrict only certain endpoints if needed
+        if user and user.is_authenticated:
+            # Check for admin or moderator role
+            # Assuming 'is_superuser' for admin, and 'is_staff' for moderator
+            if not (user.is_superuser or user.is_staff):
+                return HttpResponseForbidden('You do not have permission to perform this action.')
+        return self.get_response(request)
 import time
 from django.http import JsonResponse
 
