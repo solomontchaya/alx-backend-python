@@ -1,6 +1,7 @@
 # messaging_app/middleware.py
 from datetime import datetime
 import logging
+from django.http import HttpResponseForbidden
 
 # Configure logging to write to a file
 logging.basicConfig(
