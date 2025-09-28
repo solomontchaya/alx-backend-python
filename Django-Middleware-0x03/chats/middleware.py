@@ -5,7 +5,7 @@ from django.http import HttpResponseForbidden
 
 # Configure logging to write to a file
 logging.basicConfig(
-    filename='request_logs.txt',  # File where logs will be saved
+    filename='request.logs',  # File where logs will be saved
     level=logging.INFO,
     format='%(message)s'
 )
