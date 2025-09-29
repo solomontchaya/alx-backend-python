@@ -1,17 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-class UnreadMessagesManager(models.Manager):
-    def for_user(self, user):
-        """
-        Return unread messages for a specific user.
-        Optimized with .only() to fetch necessary fields.
-        """
-        return (
-            self.get_queryset()
-            .filter(receiver=user, read=False)
-            .only("id", "sender", "receiver", "content", "timestamp")
-        )
+from messaging.managers import UnreadMessagesManager
     
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
