@@ -25,10 +25,11 @@ def conversation_view(request, username):
 
     messages = (
         Message.objects.filter(
-            sender__in=[request.user, other_user],
-            receiver__in=[request.user, other_user]
+            Q(sender=request.user, receiver=other_user) |
+            Q(sender=other_user, receiver=request.user)
         )
         .select_related("sender", "receiver")
+        .prefetch_related("replies")  # optimize threaded replies
         .order_by("timestamp")
     )
 
