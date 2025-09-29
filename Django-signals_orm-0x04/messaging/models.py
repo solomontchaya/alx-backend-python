@@ -19,6 +19,13 @@ class Message(models.Model):
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     edited = models.BooleanField(default=False)
+    edited_by = models.ForeignKey(   # NEW FIELD
+        User,
+        null=True,
+        blank=True,
+        related_name='edited_messages',
+        on_delete=models.SET_NULL
+    )
 
     # Self-referential FK for replies
     parent_message = models.ForeignKey(
