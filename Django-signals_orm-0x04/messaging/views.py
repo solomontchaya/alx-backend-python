@@ -11,8 +11,14 @@ def inbox(request):
     """
     Display unread messages for the logged-in user.
     """
-    unread_messages = Message.unread.for_user(request.user)
-    return render(request, "messaging/inbox.html", {"unread_messages": unread_messages})
+    unread_messages = (
+        Message.unread.unread_for_user(request.user)
+        .only("id", "sender", "receiver", "content", "timestamp")
+    )
+
+    return render(request, "messaging/inbox.html", {
+        "unread_messages": unread_messages,
+    })
 
 @login_required
 @cache_page(60)  # cache for 60 seconds
