@@ -10,9 +10,13 @@ def delete_user(request):
     return redirect("home")  # redirect to homepage after deletion
 def conversation_view(request, message_id):
     root_message = get_object_or_404(
-        Message.objects.select_related("sender", "receiver").prefetch_related("replies__sender", "replies__receiver"),
-        id=message_id
-    )
+        Message.objects.select_related("sender", "receiver").prefetch_related("replies__sender", "replies__receiver" .first()
+),
+)
+
+    if not root_message:
+        return render(request, "messaging/not_found.html", status=404)  
+   
     conversation = {
         "id": root_message.id,
         "content": root_message.content,
