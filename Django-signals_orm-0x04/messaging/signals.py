@@ -15,19 +15,12 @@ def create_notification(sender, instance, created, **kwargs):
         )
 @receiver(pre_save, sender=Message)
 def log_message_edit(sender, instance, **kwargs):
-    """
-    Before saving a Message, check if it's being updated.
-    If yes, log the old content into MessageHistory.
-    """
-    if instance.pk:  # Only if message already exists (update, not create)
-        try:
-            old_message = Message.objects.get(pk=instance.pk)
-            if old_message.content != instance.content:
-                # Save old content to history
-                MessageHistory.objects.create(
-                    message=old_message,
-                    old_content=old_message.content
-                )
-                instance.edited = True  # Mark as edited
-        except Message.DoesNotExist:
-            pass
+    if instance.pk:  # Means the message already exists (update)
+        old_message = Message.objects.get(pk=instance.pk)
+        if old_message.content != instance.content:
+            MessageHistory.objects.create(
+                message=old_message,
+                old_content=old_message.content,
+                edited_by=instance.sender  # assuming the sender edits their own message
+            )
+            instance.edited = True

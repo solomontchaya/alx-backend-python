@@ -9,14 +9,15 @@ class Message(models.Model):
     edited = models.BooleanField(default=False)  # ✅ track if the message was edited
     
     def __str__(self):
-        return f"Message from {self.sender} to {self.receiver}"
+        return f"Message from {self.sender} to {self.receiver - {'Edited' if self.edited else 'Original'}}"
 class MessageHistory(models.Model):
     message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name="history")
     old_content = models.TextField()
     edited_at = models.DateTimeField(auto_now_add=True)
-
+    edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="edits")
+    
     def __str__(self):
-        return f"History of Message {self.message.id} at {self.edited_at}"
+        return f"History of Message {self.message.id} at {self.edited_at} (edited by {self.edited_by}) "
     
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")
