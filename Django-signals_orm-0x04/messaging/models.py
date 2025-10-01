@@ -27,3 +27,28 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.user} about Message {self.message.id}"
+parent_message = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        related_name="replies",
+        on_delete=models.CASCADE
+    )
+
+def __str__(self):
+        return f"{self.sender} → {self.receiver}: {self.content[:20]}"
+
+def get_thread(self):
+        """
+        Recursive function to fetch all replies (nested).
+        """
+        thread = []
+        for reply in self.replies.all().select_related("sender", "receiver"):
+            thread.append({
+                "id": reply.id,
+                "content": reply.content,
+                "sender": reply.sender.username,
+                "timestamp": reply.timestamp,
+                "replies": reply.get_thread()  # recursion
+            })
+        return thread
