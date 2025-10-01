@@ -9,7 +9,7 @@ class Message(models.Model):
     edited = models.BooleanField(default=False)  # ✅ track if the message was edited
     
     def __str__(self):
-        return f"Message from {self.sender} to {self.receiver - {'Edited' if self.edited else 'Original'}}"
+        return f"Message from {self.sender} to {self.receiver - {'Edited' if self.edited else 'Original'}}: {self.content[:20]}..."
 class MessageHistory(models.Model):
     message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name="history")
     old_content = models.TextField()
