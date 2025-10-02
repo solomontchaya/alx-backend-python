@@ -1,3 +1,5 @@
+from django.contrib import admin
+from django.urls import path, include
 """
 URL configuration for config project.
 
@@ -19,4 +21,7 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("messaging/", include("messaging.urls")),  # ✅ point to messaging app
+    path("chats/", include("chats.urls")),          # ✅ point to chats app
 ]
+

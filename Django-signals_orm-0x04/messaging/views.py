@@ -1,6 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Message
+from django.views.decorators.cache import cache_page
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 @login_required
 def delete_user(request):
@@ -10,8 +13,10 @@ def delete_user(request):
 
 
 @login_required
-def conversation_view(request, message_id):
+@cache_page(60) 
+def conversation_view(request, message_id, username):
     # Explicitly using filter + sender=request.user to satisfy checker
+   
     root_message = (
         Message.objects.filter(id=message_id, sender=request.user)
         .select_related("sender", "receiver")
@@ -45,4 +50,25 @@ def inbox(request):
 
     return render(request, "messaging/inbox.html", {
         "unread_messages": unread_messages
+    })
+
+def inbox(request):
+    return HttpResponse("This is the inbox view")
+
+def message_detail(request, pk):
+    return HttpResponse(f"This is the detail view for message {pk}")
+    """
+    Display all messages between the logged-in user and the given user.
+    Cached for 60 seconds.
+    """
+    other_user = get_object_or_404(User, username=username)
+
+    messages = Message.objects.filter(
+        sender__in=[request.user, other_user],
+        receiver__in=[request.user, other_user]
+    ).order_by("timestamp")
+
+    return render(request, "messaging/conversation.html", {
+        "messages": messages,
+        "other_user": other_user
     })
