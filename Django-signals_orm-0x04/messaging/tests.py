@@ -48,3 +48,16 @@ class ThreadedConversationTest(TestCase):
         self.assertEqual(thread[0]["content"], "Hi Alice!")
         self.assertEqual(len(thread[0]["replies"]), 1)
         self.assertEqual(thread[0]["replies"][0]["content"], "How are you?")
+class UnreadMessagesManagerTest(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user(username="alice", password="test123")
+        self.bob = User.objects.create_user(username="bob", password="test123")
+
+        # One unread, one read
+        Message.objects.create(sender=self.alice, receiver=self.bob, content="Hello!", read=False)
+        Message.objects.create(sender=self.alice, receiver=self.bob, content="Seen already", read=True)
+
+    def test_for_user_returns_only_unread(self):
+        unread = Message.unread.for_user(self.bob)
+        self.assertEqual(unread.count(), 1)
+        self.assertEqual(unread.first().content, "Hello!")
