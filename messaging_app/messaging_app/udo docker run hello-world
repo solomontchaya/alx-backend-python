@@ -1,0 +1,21 @@
+[0;1;32m●[0m docker.service - Docker Application Container Engine
+     Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+     Active: [0;1;32mactive (running)[0m since Sat 2025-10-11 00:52:03 WAT; 41s ago
+TriggeredBy: [0;1;32m●[0m docker.socket
+       Docs: https://docs.docker.com
+   Main PID: 12379 (dockerd)
+      Tasks: 9
+     Memory: 22.9M
+     CGroup: /system.slice/docker.service
+             └─12379 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+
+Oct 11 00:51:58 Ubuntu dockerd[12379]: time="2025-10-11T00:51:58.119100142+01:00" level=info msg="detected 127.0.0.53 nameserver, assuming systemd-resolved, so using resolv.conf: /run/systemd/resolve/resolv.conf"
+Oct 11 00:51:58 Ubuntu dockerd[12379]: time="2025-10-11T00:51:58.427104206+01:00" level=info msg="Creating a containerd client" address=/run/containerd/containerd.sock timeout=1m0s
+Oct 11 00:51:58 Ubuntu dockerd[12379]: time="2025-10-11T00:51:58.980730202+01:00" level=info msg="Loading containers: start."
+Oct 11 00:52:02 Ubuntu dockerd[12379]: time="2025-10-11T00:52:02.070125777+01:00" level=info msg="Loading containers: done."
+Oct 11 00:52:02 Ubuntu dockerd[12379]: time="2025-10-11T00:52:02.692910734+01:00" level=info msg="Docker daemon" commit=01f442b containerd-snapshotter=false storage-driver=overlay2 version=28.1.1
+Oct 11 00:52:02 Ubuntu dockerd[12379]: time="2025-10-11T00:52:02.696067262+01:00" level=info msg="Initializing buildkit"
+Oct 11 00:52:03 Ubuntu dockerd[12379]: time="2025-10-11T00:52:03.094108245+01:00" level=info msg="Completed buildkit initialization"
+Oct 11 00:52:03 Ubuntu dockerd[12379]: time="2025-10-11T00:52:03.151799579+01:00" level=info msg="Daemon has completed initialization"
+Oct 11 00:52:03 Ubuntu dockerd[12379]: time="2025-10-11T00:52:03.151950537+01:00" level=info msg="API listen on /run/docker.sock"
+Oct 11 00:52:03 Ubuntu systemd[1]: Started Docker Application Container Engine.
