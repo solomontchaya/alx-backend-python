@@ -1,2 +1,15 @@
-__pycache__/kubectl
+
+# Ignore virtual environments
+venv/
+*/venv/
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+
+# Ignore binaries and executables
+kubectl
 minikube-linux-amd64
+
+# Ignore system files
+.DS_Store
