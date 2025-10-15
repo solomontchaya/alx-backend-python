@@ -1,0 +1,4 @@
+kubectl apply -f ingress.yaml
+kubectl get ingress
+minikube addons enable ingress
+minikube ip
