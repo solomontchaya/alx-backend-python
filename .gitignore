@@ -13,3 +13,85 @@ minikube-linux-amd64
 
 # Ignore system files
 .DS_Store
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+.eggs/
+*.log
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+Pipfile.lock
+
+# Django stuff
+*.sqlite3
+db.sqlite3
+/media/
+staticfiles/
+static/
+*.log
+
+# Secrets and config
+*.env
+.env.*
+secret.key
+.settings_local.py
+.settings_dev.py
+
+# IDE / Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+*.tar
+docker-compose.override.yml
+.docker/
+*.bak
+
+# Kubernetes
+*.yaml~
+*.yml~
+*.log
+.kube/
+.kubernetes/
+
+# Build / cache
+build/
+dist/
+*.out
+*.tmp
+*.bak
+*.old
+
+# Byte-compiled
+*.pyc
+*.pyo
+__pycache__/
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Migrations cache (optional)
+*/migrations/__pycache__/
+*/migrations/*.pyc
+
+# Test / pytest cache
+.pytest_cache/
+.tox/

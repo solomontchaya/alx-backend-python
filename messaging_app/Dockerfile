@@ -9,19 +9,20 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Copy requirements first to leverage Docker cache
-COPY requirements.txt . /app/
+COPY requirements.txt /app/
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get install -y gcc build-essential python3-dev libc-dev && \
+    apt-get install -y gcc build-essential python3-dev libc-dev \
+                       pkg-config default-libmysqlclient-dev && \
     pip install --upgrade pip && \
     pip install -r requirements.txt && \
-    apt-get remove -y gcc build-essential python3-dev libc-dev && \
+    apt-get remove -y gcc build-essential python3-dev libc-dev pkg-config && \
     apt-get autoremove -y && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy the entire Django app into container
-COPY .. /app/
+COPY . /app/
 
 # Expose Django's default port
 EXPOSE 8000
