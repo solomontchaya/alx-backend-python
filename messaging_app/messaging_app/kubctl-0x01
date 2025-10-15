@@ -1,0 +1,31 @@
+#!/bin/bash
+# Scale Django deployment to 3 replicas, verify pods, load test, and monitor usage
+
+# Exit immediately if a command fails
+set -e
+
+echo "🔄 Scaling Django app deployment to 3 replicas..."
+kubectl scale deployment django-messaging-deployment --replicas=3
+
+echo "⏳ Waiting for pods to scale up..."
+sleep 10
+
+echo "✅ Verifying that multiple pods are running:"
+kubectl get pods -o wide
+
+echo "💡 Running a simple load test with wrk..."
+# Ensure wrk is installed in your environment; if not, print instructions
+if ! command -v wrk &> /dev/null
+then
+    echo "⚠️ wrk is not installed. Please install it with: sudo apt install wrk"
+else
+    # You can adjust the IP/port depending on how your service is exposed
+    SERVICE_IP=$(minikube service django-messaging-service --url | head -n1)
+    echo "📡 Testing load against: $SERVICE_IP"
+    wrk -t4 -c20 -d15s "$SERVICE_IP"
+fi
+
+echo "📊 Checking resource usage for pods:"
+kubectl top pods || echo "⚠️ Metrics server may not be installed. Run: minikube addons enable metrics-server"
+
+echo "✅ Done scaling and monitoring Django app."
