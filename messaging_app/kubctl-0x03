@@ -1,0 +1,24 @@
+#!/bin/bash
+# kubctl-0x03
+set -e
+
+echo "🚀 Starting rolling update for Django Blue Deployment..."
+
+# Apply the new version
+kubectl apply -f messaging_app/blue_deployment.yaml
+
+echo "⏳ Monitoring rollout status..."
+kubectl rollout status deployment django-blue-deployment
+
+echo "🧪 Sending continuous test requests to check for downtime..."
+SERVICE_IP=$(minikube service django-messaging-service --url | head -n1)
+
+# Send 20 requests 1 second apart
+for i in {1..20}; do
+  curl -s -o /dev/null -w "Request $i: %{http_code}\n" $SERVICE_IP || echo "Request $i failed!"
+  sleep 1
+done
+
+echo "✅ Rolling update complete! Checking current pods..."
+kubectl get pods -l app=django-messaging -o wide
+
