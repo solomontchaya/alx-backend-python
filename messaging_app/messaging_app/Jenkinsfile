@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    environment {
+        VENV_DIR = 'venv'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'your-credentials-id',
+                    url: 'https://github.com/solomontchaya/alx-backend-python.git'
+            }
+        }
+
+        stage('Setup Python Environment') {
+            steps {
+                // Create and activate virtual environment using ShiningPanda
+                shiningPanda.pythonBuilder {
+                    pythonName = 'System-CPython-3.10'
+                    builderName = 'Create virtualenv and install dependencies'
+                    nature = 'shell'
+                    command = '''
+                    python3 -m venv venv
+                    source venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r messaging_app/requirements.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    sh '''
+                    source venv/bin/activate
+                    pytest messaging_app/tests/ --junitxml=report.xml
+                    '''
+                }
+            }
+            post {
+                always {
+                    junit 'report.xml'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Tests passed successfully!'
+        }
+        failure {
+            echo 'Tests failed. Please check the report.'
+        }
+    }
+}
