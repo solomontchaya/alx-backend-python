@@ -48,6 +48,7 @@ jobs:
           source venv/bin/activate
           pip3 install --upgrade pip
           pip3 install -r messaging_app/requirements.txt
+          pip3 install flake8 pytest pytest-cov
 
       - name: Wait for MySQL
         run: |
@@ -56,20 +57,34 @@ jobs:
             sleep 3
           done
 
+      - name: Run Flake8 Linting
+        run: |
+          source venv/bin/activate
+          echo "Running flake8 linting..."
+          flake8 messaging_app --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 messaging_app --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        continue-on-error: false
+
       - name: Run Django Migrations
         run: |
           source venv/bin/activate
           cd messaging_app
           python manage.py migrate
 
-      - name: Run Tests
+      - name: Run Tests with Coverage
         run: |
           source venv/bin/activate
           cd messaging_app
-          pytest --ds=messaging_app.settings --junitxml=test-results.xml
+          pytest --ds=messaging_app.settings --cov=. --cov-report=xml --cov-report=html --junitxml=test-results.xml
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         with:
           name: pytest-report
           path: messaging_app/test-results.xml
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: messaging_app/htmlcov/
