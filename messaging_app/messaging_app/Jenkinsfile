@@ -2,43 +2,36 @@ pipeline {
     agent any
 
     environment {
-        VENV_DIR = 'venv'
+        IMAGE_NAME = 'your_dockerhub_username/messaging_app'
+        IMAGE_TAG = 'latest'
     }
 
     stages {
         stage('Checkout') {
             steps {
+                // Pull code from GitHub
                 git branch: 'main',
-                    credentialsId: 'your-credentials-id',
                     url: 'https://github.com/solomontchaya/alx-backend-python.git'
             }
         }
 
-        stage('Setup Python Environment') {
+        stage('Install Dependencies') {
             steps {
-                // Create and activate virtual environment using ShiningPanda
-                shiningPanda.pythonBuilder {
-                    pythonName = 'System-CPython-3.10'
-                    builderName = 'Create virtualenv and install dependencies'
-                    nature = 'shell'
-                    command = '''
-                    python3 -m venv venv
-                    source venv/bin/activate
-                    pip3 install --upgrade pip
-                    pip3 install -r messaging_app/requirements.txt
-                    '''
-                }
+                sh '''
+                python3 -m venv venv
+                source venv/bin/activate
+                pip3 install --upgrade pip
+                pip3 install -r messaging_app/requirements.txt
+                '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                script {
-                    sh '''
-                    source venv/bin/activate
-                    pytest messaging_app/tests/ --junitxml=report.xml
-                    '''
-                }
+                sh '''
+                source venv/bin/activate
+                pytest messaging_app/tests/ --junitxml=report.xml
+                '''
             }
             post {
                 always {
@@ -46,14 +39,39 @@ pipeline {
                 }
             }
         }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh '''
+                    echo "Building Docker image..."
+                    docker build -t $IMAGE_NAME:$IMAGE_TAG messaging_app/.
+                    '''
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                    echo "Logging in to Docker Hub..."
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    echo "Pushing Docker image..."
+                    docker push $IMAGE_NAME:$IMAGE_TAG
+                    docker logout
+                    '''
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo 'Tests passed successfully!'
+            echo 'Build, test, and Docker push completed successfully!'
         }
         failure {
-            echo 'Tests failed. Please check the report.'
+            echo 'Pipeline failed. Check logs for details.'
         }
     }
 }
