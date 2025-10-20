@@ -1,0 +1,75 @@
+name: Django CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+          MYSQL_USER: test_user
+          MYSQL_PASSWORD: test_pass
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_NAME: test_db
+      DB_USER: test_user
+      DB_PASSWORD: test_pass
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      SECRET_KEY: testsecret
+      DEBUG: 'False'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip3 install --upgrade pip
+          pip3 install -r messaging_app/requirements.txt
+
+      - name: Wait for MySQL
+        run: |
+          until mysqladmin ping -h 127.0.0.1 --silent; do
+            echo "Waiting for MySQL to start..."
+            sleep 3
+          done
+
+      - name: Run Django Migrations
+        run: |
+          source venv/bin/activate
+          cd messaging_app
+          python manage.py migrate
+
+      - name: Run Tests
+        run: |
+          source venv/bin/activate
+          cd messaging_app
+          pytest --ds=messaging_app.settings --junitxml=test-results.xml
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-report
+          path: messaging_app/test-results.xml
